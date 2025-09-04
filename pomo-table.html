@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pomodoro Widget</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        background: transparent;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        color: #fff;
+        padding: 20px;
+        min-height: 100vh;
+      }
+      .container {
+        width: 60%;
+        max-width: 900px;
+        min-width: 350px;
+      }
+      .calculator {
+        margin-bottom: 25px;
+        background: rgba(0, 0, 0, 0.5);
+        padding: 18px 20px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        align-items: center;
+        justify-content: space-between;
+        border-radius: 10px;
+      }
+      .calculator label {
+        display: flex;
+        flex-direction: column;
+        font-size: 14px;
+        color: #ddd;
+      }
+      .calculator input,
+      .calculator select {
+        background: rgba(255, 255, 255, 0.1);
+        border: none;
+        color: #fff;
+        padding: 8px 10px;
+        width: 100px;
+        border-radius: 6px;
+        text-align: center;
+      }
+      .calculator button {
+        background: rgba(0, 115, 255, 0.85);
+        border: none;
+        color: #fff;
+        padding: 10px 16px;
+        cursor: pointer;
+        font-weight: bold;
+        border-radius: 6px;
+        transition: background 0.2s;
+        flex-grow: 1;
+        min-width: 120px;
+      }
+      .calculator button:hover {
+        background: rgba(0, 115, 255, 1);
+      }
+      .result {
+        font-size: 15px;
+        margin-bottom: 20px;
+        text-align: center;
+        color: #ddd;
+      }
+      table {
+        border-collapse: collapse;
+        width: 100%;
+        font-size: 16px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+        overflow: hidden;
+        background: rgba(0, 0, 0, 0.35);
+        border-radius: 10px;
+        display: none;
+      }
+      th,
+      td {
+        padding: 12px 0;
+        text-align: center;
+      }
+      th {
+        background: rgba(255, 255, 255, 0.1);
+        font-weight: bold;
+      }
+      tbody tr:nth-child(even) {
+        background: rgba(255, 255, 255, 0.05);
+      }
+      tbody tr:nth-child(odd) {
+        background: rgba(255, 255, 255, 0.08);
+      }
+      tbody tr:hover {
+        background: rgba(0, 115, 255, 0.2) !important;
+      }
+      tbody tr.highlight {
+        background: rgba(0, 200, 115, 0.25);
+      }
+      tbody tr.partial {
+        background: rgba(0, 200, 115, 0.12);
+      }
+      .row-wrapper {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+        position: relative;
+        cursor: help;
+        padding: 4px 10px;
+      }
+      .row-wrapper span {
+        flex: 1;
+      }
+      .long-break {
+        font-weight: bold;
+        text-decoration: underline;
+      }
+      .tooltiptext {
+        visibility: hidden;
+        background-color: rgba(0, 0, 0, 0.85);
+        color: #fff;
+        text-align: center;
+        padding: 6px 12px;
+        font-size: 13px;
+        position: absolute;
+        bottom: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+        white-space: nowrap;
+        max-width: 90%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        opacity: 0;
+        transition: opacity 0.3s;
+        pointer-events: none;
+        z-index: 10;
+      }
+      .row-wrapper:hover .tooltiptext {
+        visibility: visible;
+        opacity: 1;
+      }
+      @media (max-width: 1200px) {
+        .container {
+          width: 80%;
+        }
+      }
+      @media (max-width: 768px) {
+        .calculator {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+        .calculator button {
+          width: 100%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="calculator">
+        <label>Start: <input type="time" id="startTime" value="07:00" /></label>
+        <label>End: <input type="time" id="endTime" value="16:16" /></label>
+        <label
+          >Focus (min): <input type="number" id="focusTime" value="45" min="1"
+        /></label>
+        <label
+          >Break (min): <input type="number" id="breakTime" value="10" min="1"
+        /></label>
+        <label
+          >Long Break (min):
+          <input type="number" id="longBreakTime" value="15" min="1"
+        /></label>
+        <label
+          >Cycles for Long Break:
+          <input type="number" id="cyclesForLongBreak" value="3" min="1"
+        /></label>
+        <label
+          >Use Long Break:
+          <select id="useLongBreak">
+            <option value="yes" selected>Yes</option>
+            <option value="no">No</option>
+          </select>
+        </label>
+        <button onclick="calculatePomos()">Calculate</button>
+      </div>
+
+      <div class="result" id="resultText">Pick a time range ⏳</div>
+
+      <table>
+        <thead>
+          <tr>
+            <th colspan="4">
+              <div class="row-wrapper">
+                <span>Pomo</span><span>Start</span><span>Focus</span
+                ><span>Break</span>
+              </div>
+            </th>
+          </tr>
+        </thead>
+        <tbody id="pomoTable"></tbody>
+      </table>
+    </div>
+
+    <script>
+      function formatTime(minutes) {
+        const h = Math.floor(minutes / 60),
+          m = minutes % 60
+        return (h ? h + 'h ' : '') + m + 'm'
+      }
+      function formatHour(minutes) {
+        const h = Math.floor(minutes / 60),
+          m = minutes % 60
+        return `${h.toString().padStart(2, '0')}:${m
+          .toString()
+          .padStart(2, '0')}`
+      }
+
+      function calculatePomos() {
+        const startInput = document.getElementById('startTime').value
+        const endInput = document.getElementById('endTime').value
+        const focusTime = parseInt(document.getElementById('focusTime').value)
+        const breakTime = parseInt(document.getElementById('breakTime').value)
+        const longBreakTime = parseInt(
+          document.getElementById('longBreakTime').value
+        )
+        const cyclesForLongBreak = parseInt(
+          document.getElementById('cyclesForLongBreak').value
+        )
+        const useLongBreak =
+          document.getElementById('useLongBreak').value === 'yes'
+        const resultEl = document.getElementById('resultText')
+
+        if (!startInput || !endInput) {
+          resultEl.textContent = 'Please set both times.'
+          return
+        }
+
+        const [sh, sm] = startInput.split(':').map(Number)
+        const [eh, em] = endInput.split(':').map(Number)
+        let start = sh * 60 + sm,
+          end = eh * 60 + em
+        if (end <= start) {
+          resultEl.textContent = 'End time must be after start time.'
+          return
+        }
+
+        let current = start,
+          fullPomos = 0
+        let pomos = []
+
+        while (current + focusTime <= end) {
+          let isLong =
+            useLongBreak && (fullPomos + 1) % cyclesForLongBreak === 0
+          let plannedBreak = isLong ? longBreakTime : breakTime
+
+          let breakFits = current + focusTime + plannedBreak <= end
+
+          pomos.push({
+            focus: focusTime,
+            break: breakFits ? plannedBreak : 0,
+            isLong: isLong,
+          })
+
+          current += focusTime + (breakFits ? plannedBreak : 0)
+          fullPomos++
+        }
+
+        const leftover = end - current
+
+        resultEl.innerHTML = `
+              ✅ <b>${fullPomos}</b> Full Pomodoros fit<br>
+              Focus: <b>${formatTime(fullPomos * focusTime)}</b>,
+              Total scheduled: <b>${formatTime(current - start)}</b><br>
+              ⏳ Leftover time: <b>${formatTime(leftover)}</b>
+            `
+
+        generateTable(
+          pomos,
+          focusTime,
+          breakTime,
+          longBreakTime,
+          cyclesForLongBreak,
+          useLongBreak,
+          start,
+          leftover
+        )
+      }
+
+      function generateTable(
+        pomos,
+        focusTime,
+        breakTime,
+        longBreakTime,
+        cyclesForLongBreak,
+        useLongBreak,
+        startMinutes,
+        leftoverTime
+      ) {
+        const tbody = document.getElementById('pomoTable')
+        tbody.innerHTML = ''
+        let currentTime = startMinutes
+        let cumulativeFocus = 0,
+          cumulativeBreak = 0
+
+        // Render all full pomos
+        for (let i = 0; i < pomos.length; i++) {
+          const p = pomos[i]
+          const displayBreak = p.break === 0 ? '–' : formatTime(p.break)
+          cumulativeFocus += p.focus
+          if (p.break !== 0) cumulativeBreak += p.break
+
+          const tr = document.createElement('tr')
+          const td = document.createElement('td')
+          td.colSpan = 4
+          const wrapper = document.createElement('div')
+          wrapper.className = 'row-wrapper'
+          wrapper.innerHTML = `
+                <span>${i + 1}</span>
+                <span>${formatHour(currentTime)}</span>
+                <span>${formatTime(p.focus)}</span>
+                <span>${displayBreak}</span>
+                <div class="tooltiptext">
+                  Cumulative: ${formatTime(
+                    cumulativeFocus
+                  )} focus, ${formatTime(cumulativeBreak)} break (${formatTime(
+            cumulativeFocus + cumulativeBreak
+          )})
+                </div>
+              `
+          td.appendChild(wrapper)
+          tr.appendChild(td)
+          tr.classList.add('highlight')
+          tbody.appendChild(tr)
+          currentTime += p.focus + p.break
+        }
+
+        // Add leftover partial pomodoro only if meaningful
+        if (leftoverTime >= 0 + breakTime) {
+          // require at least 5 minutes (or configurable)
+          const tr = document.createElement('tr')
+          const td = document.createElement('td')
+          td.colSpan = 4
+          const wrapper = document.createElement('div')
+          wrapper.className = 'row-wrapper'
+          wrapper.innerHTML = `
+        <span>${pomos.length + 1}</span>
+        <span>${formatHour(currentTime)}</span>
+        <span>${formatTime(leftoverTime)}</span>
+        <span>–</span>
+        <div class="tooltiptext">
+          Cumulative Focus: ${formatTime(cumulativeFocus + leftoverTime)}
+        </div>
+      `
+          td.appendChild(wrapper)
+          tr.appendChild(td)
+          tr.classList.add('partial')
+          tbody.appendChild(tr)
+        }
+
+        document.querySelector('table').style.display = 'table'
+      }
+
+      document.querySelector('table').style.display = 'none'
+    </script>
+  </body>
+</html>
