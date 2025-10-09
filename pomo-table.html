@@ -38,11 +38,10 @@
         position: relative;
       }
 
-      /* Toggle button */
       .collapse-toggle {
         position: absolute;
-        top: 6px;
-        right: 6px;
+        top: 4px;
+        right: 4px;
         width: 22px;
         height: 22px;
         display: flex;
@@ -54,13 +53,15 @@
         user-select: none;
         color: rgba(255, 255, 255, 0.7);
         z-index: 10;
-        transition: background 0.3s ease, color 0.3s ease, transform 0.3s ease;
+        transition: background 0.3s ease, color 0.3s ease, transform 0.3s ease,
+          border 0.3s ease;
         backdrop-filter: blur(4px);
       }
 
       .collapse-toggle.collapsed {
-        background: rgba(21, 29, 36, 0.1);
+        background: rgba(14, 15, 46, 0.5);
         color: rgba(255, 255, 255, 0.5);
+        border: 1px solid rgba(255, 255, 255, 0.1);
       }
 
       .collapse-toggle:hover {
