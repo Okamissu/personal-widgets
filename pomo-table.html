@@ -11,10 +11,7 @@
       href="https://cdn.jsdelivr.net/npm/flatpickr/dist/themes/dark.css"
     />
 
-    <!-- Favicon for modern browsers (SVG) -->
     <link rel="icon" type="image/svg+xml" href="timeshift.svg" />
-
-    <!-- Fallback for older browsers (ICO) -->
     <link rel="icon" type="image/x-icon" href="favicon.ico" />
 
     <style>
@@ -25,9 +22,9 @@
         color: #fff;
         display: flex;
         justify-content: center;
-        padding-inline: 10px;
+        padding-inline: 14px;
         min-height: 100vh;
-        overflow-y: auto;
+        overflow-y: hidden;
         overflow-x: hidden;
       }
 
@@ -77,7 +74,6 @@
         transform: rotate(180deg);
       }
 
-      /* Collapsible content */
       .collapsible-content {
         overflow: hidden;
         transition: max-height 0.5s ease, opacity 0.3s ease, padding 0.3s ease;
@@ -89,15 +85,14 @@
         padding: 0;
       }
 
-      /* Calculator form */
       .calculator {
         display: flex;
         flex-wrap: wrap;
         justify-content: space-around;
         gap: 8px;
         background: rgba(14, 15, 46, 0.5);
-        backdrop-filter: blur(20px); /* strong but not overblown */
-        -webkit-backdrop-filter: blur(20px); /* for Safari/Chrome */
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
         padding: 14px;
         align-items: flex-end;
         margin-bottom: 12px;
@@ -160,7 +155,7 @@
         background: rgba(255, 255, 255, 0.08);
         border: none;
         color: white !important;
-        padding: 5px 14px;
+        padding: 5px 8px;
         margin-top: 10px;
         font-weight: bold;
         cursor: pointer;
@@ -174,15 +169,19 @@
         background: rgba(5, 61, 243, 0.15);
       }
 
-      /* Table */
+      input:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+
       table {
         border-collapse: separate;
         border-spacing: 0;
         width: 100%;
         font-size: 15px;
         background: rgba(14, 15, 46, 0.5);
-        backdrop-filter: blur(20px); /* strong but not overblown */
-        -webkit-backdrop-filter: blur(20px); /* for Safari/Chrome */
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
         border-radius: 12px;
         margin-bottom: 12px;
         transition: max-height 0.5s ease, opacity 0.3s ease, padding 0.3s ease;
@@ -210,12 +209,12 @@
         transform: translateY(0);
       }
 
-      tbody tr.long-break {
-        background: rgba(255, 255, 255, 0.045);
+      tbody tr.partial {
+        background: rgba(5, 61, 243, 0.2) !important;
       }
 
-      tbody tr.partial {
-        background: rgba(5, 61, 243, 0.075);
+      tbody tr.long-break {
+        background: rgba(255, 255, 255, 0.045);
       }
 
       tbody tr:hover {
@@ -267,72 +266,66 @@
         opacity: 1;
       }
 
-      @media (max-width: 360px) {
-        .calculator {
-          gap: 4px;
-          padding: 12px;
-        }
+      input[type='checkbox']#useLongBreaks {
+        appearance: none;
+        width: 46px; /* match text input width */
+        height: 24px;
+        border-radius: 6px; /* same as fields */
+        background: rgba(255, 255, 255, 0.08); /* match inputs */
+        position: relative;
+        cursor: pointer;
+        transition: background 0.25s ease, box-shadow 0.25s ease,
+          transform 0.25s ease;
+        outline: none;
+        backdrop-filter: blur(3px); /* same as inputs */
+        margin: 0;
       }
 
-      /* Flatpickr fully dark, subtle highlight like inputs */
-      .flatpickr-calendar {
-        background: rgba(17, 17, 22, 0.8);
-        color: #eee;
-        border: none;
-        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
-        backdrop-filter: blur(12px);
+      input[type='checkbox']#useLongBreaks::before {
+        content: '';
+        position: absolute;
+        top: 2px;
+        left: 2px;
+        width: 20px; /* slightly smaller than checkbox width */
+        height: 20px; /* height minus padding */
+        border-radius: 6px; /* match checkbox border-radius */
+        background: rgba(255, 255, 255, 0.9);
+        transition: transform 0.25s ease, background 0.25s ease;
       }
 
-      .flatpickr-day {
-        border-radius: 6px;
-        background: transparent;
-        color: #fff;
-        transition: background 0.2s ease;
+      input[type='checkbox']#useLongBreaks:hover {
+        background: rgba(
+          255,
+          255,
+          255,
+          0.12
+        ); /* subtle hover effect like inputs */
       }
 
-      .flatpickr-day:hover,
-      .flatpickr-day:focus {
-        background: rgba(5, 61, 243, 0.15);
-        color: #fff;
+      input[type='checkbox']#useLongBreaks:checked {
+        background: rgba(5, 61, 243, 0.3);
       }
 
-      .flatpickr-day.selected,
-      .flatpickr-day.startRange,
-      .flatpickr-day.endRange {
-        background: rgba(5, 61, 243, 0.12);
-        color: #fff;
+      input[type='checkbox']#useLongBreaks:checked::before {
+        transform: translateX(22px); /* slides fully to the right */
+        background: rgba(255, 255, 255, 1);
       }
 
-      .flatpickr-time input,
-      .flatpickr-time .flatpickr-hour,
-      .flatpickr-time .flatpickr-minute,
-      .flatpickr-time .flatpickr-second {
-        background: rgba(5, 61, 243, 0.15);
-        color: #fff;
-        border-radius: 6px;
+      .table-wrapper {
+        max-height: 100vh; /* adjust as needed */
+        overflow-y: auto;
+        -ms-overflow-style: none; /* IE and Edge */
+        scrollbar-width: none; /* Firefox */
       }
 
-      input[type='time'] {
-        background: rgba(255, 255, 255, 0.08);
-        color: #fff;
-        padding: 5px 8px;
-        border-radius: 6px;
-        text-align: center;
-        font-size: 13px;
-        border: none;
-        backdrop-filter: blur(3px);
-        width: 40vw;
-        box-sizing: border-box;
+      .table-wrapper::-webkit-scrollbar {
+        display: none; /* Chrome, Safari, Opera */
       }
     </style>
   </head>
   <body>
     <div class="container">
-      <div
-        class="collapse-toggle collapsed"
-        onclick="toggleCalculator()"
-        id="toggleBtn"
-      >
+      <div class="collapse-toggle" onclick="toggleCalculator()" id="toggleBtn">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="14"
@@ -349,7 +342,7 @@
         </svg>
       </div>
 
-      <div class="collapsible-content collapsed" id="collapsibleContent">
+      <div class="collapsible-content" id="collapsibleContent">
         <div class="calculator" id="calculator">
           <div class="field">
             <label>Start</label><input type="text" id="startTime" />
@@ -359,11 +352,11 @@
           </div>
           <div class="field">
             <label>Focus</label
-            ><input type="number" id="focusTime" value="30" min="1" />
+            ><input type="number" id="focusTime" value="50" min="1" />
           </div>
           <div class="field">
             <label>Break</label
-            ><input type="number" id="breakTime" value="5" min="1" />
+            ><input type="number" id="breakTime" value="10" min="1" />
           </div>
           <div class="field">
             <label>Long</label
@@ -371,25 +364,43 @@
           </div>
           <div class="field">
             <label>Every</label
-            ><input type="number" id="pomosBeforeLongBreak" value="5" min="0" />
+            ><input type="number" id="pomosBeforeLongBreak" value="3" min="0" />
+          </div>
+          <div class="field" style="align-items: center">
+            <label>Use</label>
+            <input type="checkbox" id="useLongBreaks" />
           </div>
           <button class="calculate-btn" onclick="calculatePomos()">
-            Calculate
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="chevron"
+            >
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
           </button>
         </div>
-
-        <table id="resultTable">
-          <thead>
-            <tr>
-              <th colspan="3">
-                <div class="row-wrapper">
-                  <span>Start</span><span>Focus</span><span>Break</span>
-                </div>
-              </th>
-            </tr>
-          </thead>
-          <tbody id="pomoTable"></tbody>
-        </table>
+        <div class="table-wrapper">
+          <table id="resultTable">
+            <thead>
+              <tr>
+                <th colspan="3">
+                  <div class="row-wrapper">
+                    <span>Start</span><span>Focus</span><span>Break</span>
+                  </div>
+                </th>
+              </tr>
+            </thead>
+            <tbody id="pomoTable"></tbody>
+          </table>
+        </div>
       </div>
     </div>
 
@@ -401,14 +412,14 @@
         noCalendar: true,
         time_24hr: true,
         locale: 'pl',
-        defaultDate: '07:30',
+        defaultDate: '07:40',
       })
       flatpickr('#endTime', {
         enableTime: true,
         noCalendar: true,
         time_24hr: true,
         locale: 'pl',
-        defaultDate: '17:30',
+        defaultDate: '18:00',
       })
 
       function padZero(n) {
@@ -425,7 +436,16 @@
         return `${padZero(h)}:${padZero(mm)}`
       }
 
-      let preventBroadcast = false // <-- new flag
+      let preventBroadcast = false
+
+      // Enable long breaks by default
+      document.addEventListener('DOMContentLoaded', () => {
+        const useLongBreaks = document.getElementById('useLongBreaks')
+        useLongBreaks.checked = true
+        document.getElementById('longBreakTime').disabled = false
+        document.getElementById('pomosBeforeLongBreak').disabled = false
+        calculatePomos()
+      })
 
       function calculatePomos() {
         const startInput = document.getElementById('startTime').value,
@@ -437,7 +457,8 @@
           ),
           pomosBeforeLongBreak = parseInt(
             document.getElementById('pomosBeforeLongBreak').value
-          )
+          ),
+          useLongBreaks = document.getElementById('useLongBreaks').checked
 
         if (!startInput || !endInput) return
 
@@ -455,8 +476,16 @@
           const remaining = end - current
           if (remaining >= focusTime + breakTime) {
             pomoCount++
-            let thisBreak =
-              pomoCount % pomosBeforeLongBreak === 0 ? longBreakTime : breakTime
+            let thisBreak
+            if (
+              useLongBreaks &&
+              pomosBeforeLongBreak > 0 &&
+              pomoCount % pomosBeforeLongBreak === 0
+            ) {
+              thisBreak = longBreakTime
+            } else {
+              thisBreak = breakTime
+            }
             if (remaining < focusTime + thisBreak)
               thisBreak = remaining - focusTime
             pomos.push({ focus: focusTime, break: thisBreak })
@@ -469,38 +498,61 @@
             current = end
           }
         }
-        generateTable(pomos, start)
+        generateTable(
+          pomos,
+          start,
+          focusTime,
+          breakTime,
+          longBreakTime,
+          useLongBreaks
+        )
 
-        // broadcast only if flag is false
         if (!preventBroadcast && socket.readyState === WebSocket.OPEN) {
           socket.send(
             JSON.stringify({
               startTime: startInput,
               endTime: endInput,
-              focusTime: focusTime,
-              breakTime: breakTime,
-              longBreakTime: longBreakTime,
-              pomosBeforeLongBreak: pomosBeforeLongBreak,
+              focusTime,
+              breakTime,
+              longBreakTime,
+              pomosBeforeLongBreak,
             })
           )
         }
       }
 
-      function generateTable(pomos, startMinutes) {
+      function generateTable(
+        pomos,
+        startMinutes,
+        focusTime,
+        breakTime,
+        longBreakTime,
+        useLongBreaks
+      ) {
         const tbody = document.getElementById('pomoTable')
         tbody.innerHTML = ''
         let current = startMinutes,
           cumFocus = 0,
           cumBreak = 0
-        const longBreakTime = parseInt(
-          document.getElementById('longBreakTime').value
-        )
-
         pomos.forEach((p, i) => {
           cumFocus += p.focus
           if (p.break) cumBreak += p.break
           const tr = document.createElement('tr')
-          if (p.break === longBreakTime) tr.classList.add('long-break')
+
+          if (useLongBreaks) {
+            if (p.break === longBreakTime) {
+              tr.classList.add('long-break')
+            } else if (p.focus < focusTime) {
+              tr.classList.add('partial')
+            }
+          } else {
+            if (i % 2 === 1) {
+              tr.classList.add('long-break')
+            } else if (p.focus < focusTime) {
+              tr.classList.add('partial')
+            }
+          }
+
           const td = document.createElement('td')
           td.colSpan = 3
           const wrapper = document.createElement('div')
@@ -512,15 +564,15 @@
           )}</span><span>${formatTime(
             p.focus
           )}</span><span>${displayBreak}</span>
-      <div class="tooltiptext">
-        Pomo: ${i + 1}<br>Focus: ${formatTime(cumFocus)}<br>Break: ${formatTime(
-            cumBreak
-          )}<br>Total: ${formatTime(cumFocus + cumBreak)}<br>Ratio: ${ratio}
-      </div>`
+            <div class="tooltiptext">
+              Pomo: ${i + 1}<br>Focus: ${formatTime(
+            cumFocus
+          )}<br>Break: ${formatTime(cumBreak)}<br>Total: ${formatTime(
+            cumFocus + cumBreak
+          )}<br>Ratio: ${ratio}
+            </div>`
           td.appendChild(wrapper)
           tr.appendChild(td)
-          if (p.focus < parseInt(document.getElementById('focusTime').value))
-            tr.classList.add('partial')
           tbody.appendChild(tr)
           setTimeout(() => tr.classList.add('visible'), i * 50)
           current += p.focus + p.break
@@ -534,13 +586,20 @@
         toggle.classList.toggle('collapsed')
       }
 
-      // --- WebSocket sync ---
-      const socket = new WebSocket('ws://192.168.0.202:8766')
+      document
+        .getElementById('useLongBreaks')
+        .addEventListener('change', (e) => {
+          const disabled = !e.target.checked
+          document.getElementById('longBreakTime').disabled = disabled
+          document.getElementById('pomosBeforeLongBreak').disabled = disabled
+          calculatePomos()
+        })
 
+      const socket = new WebSocket('ws://192.168.0.202:8766')
       socket.addEventListener('message', (e) => {
         const state = JSON.parse(e.data)
         if (!state) return
-        preventBroadcast = true // <-- prevent loop
+        preventBroadcast = true
         document.getElementById('startTime').value = state.startTime
         document.getElementById('endTime').value = state.endTime
         document.getElementById('focusTime').value = state.focusTime
@@ -549,7 +608,7 @@
         document.getElementById('pomosBeforeLongBreak').value =
           state.pomosBeforeLongBreak
         calculatePomos()
-        preventBroadcast = false // <-- allow next broadcasts
+        preventBroadcast = false
       })
     </script>
   </body>
