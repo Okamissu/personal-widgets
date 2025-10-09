@@ -328,7 +328,11 @@
   </head>
   <body>
     <div class="container">
-      <div class="collapse-toggle" onclick="toggleCalculator()" id="toggleBtn">
+      <div
+        class="collapse-toggle collapsed"
+        onclick="toggleCalculator()"
+        id="toggleBtn"
+      >
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="14"
@@ -345,7 +349,7 @@
         </svg>
       </div>
 
-      <div class="collapsible-content" id="collapsibleContent">
+      <div class="collapsible-content collapsed" id="collapsibleContent">
         <div class="calculator" id="calculator">
           <div class="field">
             <label>Start</label><input type="text" id="startTime" />
