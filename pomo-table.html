@@ -566,11 +566,9 @@
             p.focus
           )}</span><span>${displayBreak}</span>
             <div class="tooltiptext">
-              Pomo: ${i + 1}<br>Focus: ${formatTime(
-            cumFocus
-          )}<br>Break: ${formatTime(cumBreak)}<br>Total: ${formatTime(
-            cumFocus + cumBreak
-          )}<br>Ratio: ${ratio}
+              Focus: ${formatTime(cumFocus)}<br>Break: ${formatTime(
+            cumBreak
+          )}<br>Total: ${formatTime(cumFocus + cumBreak)}<br>Ratio: ${ratio}
             </div>`
           td.appendChild(wrapper)
           tr.appendChild(td)
